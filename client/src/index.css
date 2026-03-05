@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-gray-800 antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-serif;
+  }
+}
+
+/* Custom FullCalendar Styling */
+.fc {
+  font-family: 'Inter', sans-serif;
+}
+
+.fc .fc-toolbar-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  color: #be185d;
+  /* rose-700 */
+}
+
+.fc .fc-button-primary {
+  background-color: #e11d48;
+  /* rose-600 */
+  border-color: #e11d48;
+  font-weight: 600;
+  text-transform: capitalize;
+  transition: all 0.2s;
+}
+
+.fc .fc-button-primary:hover {
+  background-color: #be123c;
+  /* rose-700 */
+  border-color: #be123c;
+}
+
+.fc .fc-button-primary:disabled {
+  background-color: #fda4af;
+  /* rose-300 */
+  border-color: #fda4af;
+}
+
+.fc .fc-daygrid-day.fc-day-today {
+  background-color: #fff1f2 !important;
+  /* rose-50 */
+}
+
+.fc .fc-highlight {
+  background-color: #fce7f3;
+  /* rose-100 */
+}
+
+.fc .fc-timegrid-slot {
+  height: 3rem;
+  /* Taller slots */
+}
+
+/* Event Styling */
+.fc-event {
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

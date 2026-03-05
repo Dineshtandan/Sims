@@ -1,0 +1,11 @@
+# Environment Variables
+.env
+
+# Logs
+*.log
+server_log.txt
+lint_output.txt
+lint_report.json
+
+# Node modules (redundant but safe)
+node_modules/
