@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # MERN Beauty Booking App
 
 ## troubleshooting
@@ -28,3 +29,6 @@ If the page looks unstyled:
 - URL: `http://localhost:5173/admin`
 - Email: `admin@bellabeauty.com`
 - Password: `admin123`
+=======
+# Sims
+>>>>>>> 96efec1606f47639a1668e9174c7f9d4a5531d08
