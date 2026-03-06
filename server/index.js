@@ -4,7 +4,39 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 
 // Load environment variables from .env file
-dotenv.config();
+const result = dotenv.config({ override: true });
+if (result.error) {
+    console.warn("Dotenv warning:", result.error.message);
+}
+
+// DNS Fix for SRV ECONNREFUSED (Atlas)
+const dns = require('dns');
+try {
+    dns.setServers(['8.8.8.8', '1.1.1.1']);
+    console.log('DNS servers set to Google/Cloudflare for Atlas SRV resolution');
+} catch (e) {
+    console.warn('Could not set custom DNS servers:', e.message);
+}
+
+// Log MONGODB_URI (masking password)
+const dbUri = process.env.MONGODB_URI || process.env.MONGO_URI;
+if (dbUri) {
+    const maskedURI = dbUri.replace(/:([^@]+)@/, ':****@');
+    console.log(`Using DB URI: ${maskedURI}`);
+} else {
+    console.warn('DB URI (MONGODB_URI) is not defined in environment variables!');
+}
+
+// Global Error Handlers
+process.on('unhandledRejection', (err) => {
+    console.error(`Unhandled Rejection: ${err.message}`);
+    // Do not exit in production/serverless
+});
+
+process.on('uncaughtException', (err) => {
+    console.error(`Uncaught Exception: ${err.message}`);
+    // Do not exit in production/serverless
+});
 
 // Connect to database
 connectDB();
@@ -57,7 +89,7 @@ const PORT = process.env.PORT || 5000;
 if (process.env.NODE_ENV !== 'production') {
     app.listen(PORT, () => {
         console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-        console.log('Server Version: 2.0 (Robust File-Based Auth)');
+        console.log('Server Version: 2.2 (DNS & Resilience Fix)');
     });
 }
 

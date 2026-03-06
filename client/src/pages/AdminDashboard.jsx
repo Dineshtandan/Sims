@@ -101,13 +101,22 @@ const AdminDashboard = () => {
     const handleCreateService = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/services', newService);
+            // Clean service data
+            const serviceData = {
+                ...newService,
+                price: parseFloat(newService.price),
+                // If image is empty string, don't send it so the model default is used
+                image: newService.image.trim() || undefined
+            };
+
+            await api.post('/services', serviceData);
             toast.success('Service added successfully');
             fetchData();
             setNewService({ name: '', price: '', description: '', image: '' });
         } catch (error) {
             console.error(error);
-            toast.error('Failed to add service');
+            const errorMsg = error.response?.data?.message || 'Failed to add service';
+            toast.error(errorMsg);
         }
     };
 

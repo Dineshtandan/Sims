@@ -24,6 +24,34 @@ router.post('/', async (req, res) => {
     const { name, email, phone, date, service, notes } = req.body;
 
     try {
+        const bookingDate = new Date(date);
+        const bufferBefore = new Date(bookingDate.getTime() - 59 * 60 * 1000); // 59 mins before
+        const bufferAfter = new Date(bookingDate.getTime() + 59 * 60 * 1000);  // 59 mins after
+
+        // 1. Check existing Bookings (Confirmed or Pending)
+        const existingBooking = await Booking.findOne({
+            status: { $ne: 'rejected' },
+            date: { $gt: bufferBefore, $lt: bufferAfter }
+        });
+
+        // 2. Check Training Sessions (Classes)
+        // We assume classes are also 1 hour minimum for blocking, but we can check their specific duration
+        const existingClass = await TrainingSession.findOne({
+            date: { $gt: bufferBefore, $lt: bufferAfter }
+        });
+
+        // 3. Check Manual Blocks
+        const existingBlock = await AvailabilityBlock.findOne({
+            start: { $lt: bufferAfter },
+            end: { $gt: bookingDate }
+        });
+
+        if (existingBooking || existingClass || existingBlock) {
+            return res.status(400).json({
+                message: 'This time slot overlaps with an existing appointment, class, or blocked time.'
+            });
+        }
+
         const booking = await Booking.create({
             name, email, phone, date, service, notes
         });
@@ -38,18 +66,18 @@ router.post('/', async (req, res) => {
 // @access  Public
 router.get('/availability', async (req, res) => {
     try {
-        const bookings = await Booking.find({ status: { $ne: 'cancelled' } }).populate('service');
+        const bookings = await Booking.find({ status: { $ne: 'rejected' } }).populate('service');
         const blocks = await AvailabilityBlock.find({});
         const training = await TrainingSession.find({});
 
         // Format for FullCalendar or Frontend Consumption
         const events = [
             ...bookings.map(b => ({
-                title: 'Booked',
+                title: b.status === 'pending' ? 'Pending Request' : 'Booked',
                 start: b.date,
                 end: new Date(new Date(b.date).getTime() + 60 * 60 * 1000), // 1 hour default
                 display: 'background',
-                color: '#ff9f89'
+                color: b.status === 'pending' ? '#fde047' : '#ff9f89' // Yellow for pending, Salmon for confirmed
             })),
             ...blocks.map(b => ({
                 title: b.reason || 'Blocked',

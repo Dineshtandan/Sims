@@ -152,7 +152,7 @@ const Booking = () => {
                             dateClick={handleDateClick}
                             height="auto"
                             eventContent={(eventInfo) => (
-                                <div className="text-xs p-1 italic">
+                                <div className="text-xs p-1 font-semibold">
                                     {eventInfo.event.title}
                                 </div>
                             )}

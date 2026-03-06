@@ -217,12 +217,6 @@ const Training = () => {
                                                 </li>
                                             ))}
                                         </ul>
-                                        <Link
-                                            to="/booking?type=training"
-                                            className="block w-full text-center border-2 border-rose-600 text-rose-600 font-bold py-2 rounded-lg hover:bg-rose-600 hover:text-white transition-colors"
-                                        >
-                                            Book Course
-                                        </Link>
                                     </div>
                                 </div>
                             </div>
